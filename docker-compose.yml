@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  database:
+    container_name: database
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: keenethics
+
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PORT: 3000
+      HOST: '0.0.0.0'
+      MONGO_URL: mongodb://database:27017
+      MONGO_DB: keenethics
+      MONGO_USER: root
+      MONGO_PASSWORD: example
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
