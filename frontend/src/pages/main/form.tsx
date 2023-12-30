@@ -1,68 +1,7 @@
 import { useState } from "react";
-import { mutate } from "swr";
-import { IBicycle } from "./types";
-
-const createBicycle = async (bicycle: Omit<IBicycle, "status">) => {
-  const res = await fetch("/api/bicycle", {
-    body: JSON.stringify(bicycle),
-    headers: { "Content-Type": "application/json" },
-    method: "POST",
-  });
-  const result = await res.json();
-  console.log({ result });
-
-  if (res.status !== 200) {
-    throw new Error(result.message);
-  } else {
-    mutate("/api/bicycle");
-  }
-};
-
-function Input({
-  required,
-  type,
-  placeholder,
-  value,
-  setValue,
-}: {
-  required?: boolean;
-  type: "text" | "number";
-  placeholder: string;
-  value: string | null;
-  setValue: (value: string) => void;
-}) {
-  const borderColor =
-    value === null || !required
-      ? ""
-      : value.length > 0
-        ? "border-[#6FCF97]"
-        : "border-[#EB5757]";
-  return (
-    <input
-      required={required}
-      className={`p-4 rounded-md border-2 outline-none ${borderColor} bg-[#E8E8E8] placeholder:text-[#717171]`}
-      onChange={(e) => setValue(e.target.value)}
-      value={value ?? ""}
-      type={type}
-      placeholder={placeholder}
-    ></input>
-  );
-}
-
-function Textarea(props: {
-  placeholder: string;
-  value: string | null;
-  setDescription: (value: string) => void;
-}) {
-  return (
-    <textarea
-      value={props.value ?? ""}
-      onChange={(e) => props.setDescription(e.target.value)}
-      placeholder={props.placeholder}
-      className="p-4 resize-none rounded-md text-[#717171] bg-[#E8E8E8] col-span-2 row-span-2"
-    />
-  );
-}
+import { createBicycle } from "@/api";
+import { Input } from "./input";
+import { Textarea } from "./textarea";
 
 export function AddBicycleForm() {
   const [name, setName] = useState<string | null>(null);
@@ -82,31 +21,32 @@ export function AddBicycleForm() {
     setId(null);
     setDescription(null);
   };
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    await createBicycle({
+      name: name!,
+      type: type!,
+      color: color!,
+      wheelSize: Number(wheelSize!),
+      price: Number(price!),
+      id: id ?? "",
+      description: description ?? "",
+    }).then(
+      () => clear(),
+      (error) => {
+        setErrors(
+          JSON.parse(error.message).map(
+            (it) => `Error in "${it.path}" - ${it.message}`,
+          ),
+        );
+      },
+    );
+  };
 
   return (
     <form
       className="grid grid-cols-2 grid-rows-[repeat(5,2.25rem),auto,2.25rem] gap-4 h-fit"
-      onSubmit={async (e) => {
-        e.preventDefault();
-        await createBicycle({
-          name: name!,
-          type: type!,
-          color: color!,
-          wheelSize: Number(wheelSize!),
-          price: Number(price!),
-          id: id ?? "",
-          description: description ?? "",
-        }).then(
-          () => clear(),
-          (error) => {
-            setErrors(
-              JSON.parse(error.message).map(
-                (it) => `Error in "${it.path}" - ${it.message}`,
-              ),
-            );
-          },
-        );
-      }}
+      onSubmit={onSubmitHandler}
     >
       <Input
         required
@@ -156,18 +96,15 @@ export function AddBicycleForm() {
       />
       <div className="col-span-2 h-fit">
         {errors.map((it) => (
-          <label key={it} className="block text-[#EB5757]">
+          <label key={it} className="block text-error">
             {it}
           </label>
         ))}
       </div>
-      <button type="submit" className="bg-[#696969] text-[#E8E8E8] rounded-md">
+      <button type="submit" className="bg-darkgrey text-white rounded-md">
         SAVE
       </button>
-      <button
-        onClick={clear}
-        className="bg-[#696969] text-[#E8E8E8] rounded-md"
-      >
+      <button onClick={clear} className="bg-darkgrey text-white rounded-md">
         CLEAR
       </button>
     </form>

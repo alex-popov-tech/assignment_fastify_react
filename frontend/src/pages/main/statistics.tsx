@@ -10,7 +10,7 @@ export function Statistics({ bicycles }: { bicycles: IBicycle[] }) {
   const averageBikeCost = (totalBikeCost / totalBikes || 0).toFixed(2);
 
   return (
-    <div className="border-t-2 border-[#C4C4C4] mt-4 pt-4 flex flex-col gap-3">
+    <div className="border-t-2 border-border mt-4 pt-4 flex flex-col gap-3">
       <label className="font-bold text-xl">STATISTICS</label>
       <label>
         Total Bikes: <span className="font-bold">{totalBikes}</span>
