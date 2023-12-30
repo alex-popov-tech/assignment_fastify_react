@@ -7,8 +7,8 @@ export const BicycleSchema = z.object({
   type: z.string(),
   status: z.enum(["BUSY", "AVAILABLE", "UNAVAILABLE"]),
   color: z.string(),
-  wheelSize: z.number(),
-  price: z.number(),
+  wheelSize: z.number().gt(0),
+  price: z.number().gt(0),
 });
 
 export const BicyclesSchema = z.array(BicycleSchema);

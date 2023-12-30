@@ -4,7 +4,7 @@ import { IBicycle } from "./types";
 import { BicycleCard } from "./bicycleCard";
 import { Statistics } from "./statistics";
 
-function App() {
+export function Main() {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data: bicycles = [], error } = useSWR<IBicycle[]>(
     "/api/bicycle",
@@ -23,7 +23,9 @@ function App() {
       </header>
       <main className="grow grid grid-cols-[4fr_2px_3fr] gap-2 m-2">
         <div className="flex flex-col gap-2">
-          {bicycles?.map((bicycle) => <BicycleCard bicycle={bicycle} />)}
+          {bicycles?.map((bicycle) => (
+            <BicycleCard key={bicycle.id} bicycle={bicycle} />
+          ))}
         </div>
         <div className="bg-[#C4C4C4]"></div>
         <div>
@@ -40,5 +42,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

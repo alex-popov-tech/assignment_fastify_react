@@ -9,6 +9,8 @@ const createBicycle = async (bicycle: Omit<IBicycle, "status">) => {
     method: "POST",
   });
   const result = await res.json();
+  console.log({ result });
+
   if (res.status !== 200) {
     throw new Error(result.message);
   } else {
@@ -70,6 +72,7 @@ export function AddBicycleForm() {
   const [price, setPrice] = useState<string | null>(null);
   const [id, setId] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
   const clear = () => {
     setName(null);
     setType(null);
@@ -82,7 +85,7 @@ export function AddBicycleForm() {
 
   return (
     <form
-      className="grid grid-cols-2 grid-rows-[repeat(6,2.25rem)] gap-4 h-fit"
+      className="grid grid-cols-2 grid-rows-[repeat(5,2.25rem),auto,2.25rem] gap-4 h-fit"
       onSubmit={async (e) => {
         e.preventDefault();
         await createBicycle({
@@ -95,7 +98,13 @@ export function AddBicycleForm() {
           description: description ?? "",
         }).then(
           () => clear(),
-          (err) => console.error(err),
+          (error) => {
+            setErrors(
+              JSON.parse(error.message).map(
+                (it) => `Error in "${it.path}" - ${it.message}`,
+              ),
+            );
+          },
         );
       }}
     >
@@ -145,6 +154,13 @@ export function AddBicycleForm() {
         value={description}
         setDescription={setDescription}
       />
+      <div className="col-span-2 h-fit">
+        {errors.map((it) => (
+          <label key={it} className="block text-[#EB5757]">
+            {it}
+          </label>
+        ))}
+      </div>
       <button type="submit" className="bg-[#696969] text-[#E8E8E8] rounded-md">
         SAVE
       </button>

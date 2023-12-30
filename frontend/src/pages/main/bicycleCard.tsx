@@ -44,7 +44,7 @@ function StatusSelect({
       }}
     >
       {["AVAILABLE", "UNAVAILABLE", "BUSY"].map((value) => (
-        <option value={value} selected={value === status}>
+        <option key={value} value={value}>
           {value[0] + value.toLowerCase().substring(1) + " ▼"}
         </option>
       ))}
@@ -93,16 +93,16 @@ export function BicycleCard({ bicycle }: { bicycle: IBicycle }) {
             <path
               d="M18 6L6 18"
               stroke="black"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M6 6L18 18"
               stroke="black"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
         </button>

@@ -7,7 +7,7 @@ export function Statistics({ bicycles }: { bicycles: IBicycle[] }) {
   ).length;
   const bookedBikes = bicycles.filter((it) => it.status === "BUSY").length;
   const totalBikeCost = bicycles.reduce((acc, it) => acc + it.price, 0);
-  const averageBikeCost = (totalBikeCost / totalBikes).toFixed(2);
+  const averageBikeCost = (totalBikeCost / totalBikes || 0).toFixed(2);
 
   return (
     <div className="border-t-2 border-[#C4C4C4] mt-4 pt-4 flex flex-col gap-3">

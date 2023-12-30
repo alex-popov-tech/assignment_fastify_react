@@ -63,7 +63,6 @@ function list(app: FastifyInstance) {
         ?.collection<IBicycle>("bicycles")
         .find({})
         .toArray();
-
       return res.send(bicycles);
     },
   });
@@ -101,6 +100,7 @@ function create(app: FastifyInstance) {
     url: "/api/bicycle",
     schema: {
       body: BicycleSchema.pick({
+        id: true,
         name: true,
         description: true,
         color: true,
@@ -109,7 +109,7 @@ function create(app: FastifyInstance) {
         type: true,
       })
         .required()
-        .partial({ description: true }),
+        .partial({ description: true, id: true }),
       response: {
         200: BicycleSchema,
       },
